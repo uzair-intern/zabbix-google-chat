@@ -34,7 +34,7 @@ class ChatSender:
             if cp.has_section('chat'):
                 self.webhook = cp['chat'][webhook_name]
         except:
-            print('Falha na leitura do arquivo de configuracao')
+            print('Failed to read the configuration file')
 
         self.evt_thread = self.readEventThread()
         today = datetime.datetime.now().strftime("%d-%m-%Y")
@@ -60,13 +60,13 @@ class ChatSender:
         # Monta titulo e imagem do card
         stat = None
         if status == "0":
-            stat = "Problema"
+            stat = "Proble,"
             image_url = self.PROBLEM_IMG
         elif status == "1":
-            stat = "Resolvido"
+            stat = "Resolved"
             image_url = self.RESOLVED_IMG
         elif status == "2":
-            stat = "Reconhecido"
+            stat = "Recognized"
             image_url = self.ACK_IMG
 
         # Se for uma mensagem de problema ou resolucao
@@ -82,9 +82,9 @@ class ChatSender:
             host_description = event[9]
 
             bot_message = {
-            "cards": [ 
-              { "header": 
-                { "title": "Severidade: " + severity,
+            "cards": [
+              { "header":
+                { "title": "Severity: " + severity,
                   "subtitle": stat,
                   "imageUrl": image_url,
                   "imageStyle": "IMAGE"
@@ -92,7 +92,7 @@ class ChatSender:
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Alarme",
+                        "topLabel": "Alarm",
                         "content": trigger_name,
                         "contentMultiline": "true"
                       }
@@ -104,20 +104,20 @@ class ChatSender:
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hora",
+                        "topLabel": "Data/Hour",
                         "content": date + " - " + time
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "ID do Evento",
+                        "topLabel": "Event ID",
                         "content": self.event_id
                       }
                     }
                   ]},
                   { "widgets": [
                     { "buttons": [
-                      { "textButton": 
-                        { "text": "Ver o evento no ZABBIX",
+                      { "textButton":
+                        { "text": "View the event on ZABBIX",
                           "onClick": {
                             "openLink": {
                               "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
@@ -141,13 +141,13 @@ class ChatSender:
             self.trigger_id = event[7]
 
             if event_status == "PROBLEM":
-                event_status = "Ativo"
+                event_status = "Active"
             elif event_status == "RESOLVED":
-                event_status = "Resolvido"
+                event_status = "Resolved"
 
             bot_message = {
-            "cards": [ 
-              { "header": 
+            "cards": [
+              { "header":
                 { "title": stat,
                   "subtitle": ack_user,
                   "imageUrl": image_url,
@@ -156,31 +156,31 @@ class ChatSender:
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Mensagem",
+                        "topLabel": "Message",
                         "content": ack_message,
                         "contentMultiline": "true"
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Status atual do alarme",
+                        "topLabel": "Current alarm status",
                         "content": event_status
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hora",
+                        "topLabel": "Data/Hour",
                         "content": date + " - " + time
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "ID do Evento",
+                        "topLabel": "Event ID",
                         "content": self.event_id
                       }
                     }
                   ]},
                   { "widgets": [
                     { "buttons": [
-                      { "textButton": 
-                        { "text": "Ver o evento no ZABBIX",
+                      { "textButton":
+                        { "text": "View the event on ZABBIX",
                           "onClick": {
                             "openLink": {
                               "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
@@ -242,6 +242,3 @@ if __name__ == '__main__':
     event = msg.split('#')
     cs = ChatSender(webhook_name)
     cs.sendMessage(event)
-
-
-
