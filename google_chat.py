@@ -60,7 +60,7 @@ class ChatSender:
         # Monta titulo e imagem do card
         stat = None
         if status == "0":
-            stat = "Proble,"
+            stat = "Problem"
             image_url = self.PROBLEM_IMG
         elif status == "1":
             stat = "Resolved"
