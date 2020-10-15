@@ -104,7 +104,7 @@ class ChatSender:
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hour",
+                        "topLabel": "Date/Hour",
                         "content": date + " - " + time
                       }
                     },
@@ -167,7 +167,7 @@ class ChatSender:
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hour",
+                        "topLabel": "Date/Hour",
                         "content": date + " - " + time
                       }
                     },
