@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from httplib2 import Http
 from json import dumps
@@ -18,7 +18,7 @@ import configparser
 
 class ChatSender:
 
-    INI_FILE = '/usr/local/share/zabbix/alertscripts/google_chat.ini'
+    INI_FILE = '/home/uzi/chat/google_chat.ini'
 
     PROBLEM_IMG = 'https://png.pngtree.com/svg/20161208/status_warning_336325.png'
     ACK_IMG = 'https://static1.squarespace.com/static/549db876e4b05ce481ee4649/t/54a47a31e4b0375c08400709/1472574912591/form-3.png'
@@ -83,52 +83,38 @@ class ChatSender:
 
             bot_message = {
             "cards": [
-              { "header":
-                { "title": "Severity: " + severity,
-                  "subtitle": stat,
-                  "imageUrl": image_url,
-                  "imageStyle": "IMAGE"
-                },
+              {
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Alarm",
-                        "content": trigger_name,
-                        "contentMultiline": "true"
-                      }
+                       "topLabel": severity ,
+                        "content": "<b>"+host_name+"</b>",
+                        "iconUrl": image_url,
+                        "contentMultiline": "true",
+                        "button":{
+		          "textButton": {
+		          "text":"View",
+				"onClick": {
+				    "openLink": {
+					"url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
+						},
+					},
+			 	},
+			 },
+			"bottomLabel": "Event ID : "+ self.event_id,
+                      },
                     },
-                    { "keyValue": {
-                        "topLabel": "Host",
-                        "content": host_name + " " + host_description,
-                        "contentMultiline": "true"
-                      }
+                    { "keyValue":{
+                    	"content" : "<u><b>"+trigger_name +"</b></u><br>"+host_description+"<br>Time: <b>"+ time +"</b>",
+                        "contentMultiline": "true",
+                        "bottomLabel":" Date: "+date,
+                    	}
                     },
-                    { "keyValue": {
-                        "topLabel": "Date/Hour",
-                        "content": date + " - " + time
-                      }
-                    },
-                    { "keyValue": {
-                        "topLabel": "Event ID",
-                        "content": self.event_id
-                      }
-                    }
                   ]},
-                  { "widgets": [
-                    { "buttons": [
-                      { "textButton":
-                        { "text": "View the event on ZABBIX",
-                          "onClick": {
-                            "openLink": {
-                              "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
-                            }
-                          }
-                        }
-                      }
-                    ]}
-                  ]}
-              ]}
-            ]}
+
+              ]
+              }
+]}
 
         # Se for uma mensagem de reconhecimento
         elif status == "2":
@@ -147,51 +133,36 @@ class ChatSender:
 
             bot_message = {
             "cards": [
-              { "header":
-                { "title": stat,
-                  "subtitle": ack_user,
-                  "imageUrl": image_url,
-                  "imageStyle": "IMAGE"
-                },
+              {
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Message",
-                        "content": ack_message,
-                        "contentMultiline": "true"
-                      }
+                       "topLabel": event_status ,
+                        "content": "<b>"+ack_user+"</b>",
+                        "iconUrl": image_url,
+                        "contentMultiline": "true",
+                        "button":{
+		          "textButton": {
+		          "text":"View",
+				"onClick": {
+				    "openLink": {
+					"url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
+						},
+					},
+			 	},
+			 },
+			"bottomLabel": "Event ID : "+ self.event_id,
+                      },
                     },
-                    { "keyValue": {
-                        "topLabel": "Current alarm status",
-                        "content": event_status
-                      }
+                    { "keyValue":{
+                    	"content" : "<u><b>"+ack_message +"</b></u><br>"+stat+"<br>Time: <b>"+ time +"</b>",
+                        "contentMultiline": "true",
+                        "bottomLabel":" Date: "+date,
+                    	}
                     },
-                    { "keyValue": {
-                        "topLabel": "Date/Hour",
-                        "content": date + " - " + time
-                      }
-                    },
-                    { "keyValue": {
-                        "topLabel": "Event ID",
-                        "content": self.event_id
-                      }
-                    }
                   ]},
-                  { "widgets": [
-                    { "buttons": [
-                      { "textButton":
-                        { "text": "View the event on ZABBIX",
-                          "onClick": {
-                            "openLink": {
-                              "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
-                            }
-                          }
-                        }
-                      }
-                    ]}
-                  ]}
               ]}
-            ]}
+]}
 
         # verifica se ja possui thread, adicionando a thread na mensagem caso positivo
         if self.trigger_id in self.evt_thread:
